@@ -6,7 +6,7 @@
 license = '''
 MIT License
 
-Copyright (c) 2021 SourceCode347
+Copyright (c) 2021 Nikolaos Bazigos
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,15 +27,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 https://github.com/sourcecode347/SQLISpider/
-
 '''
+
 print(license)
-import random,time
+import random,time,requests
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from termcolor import colored
+from urllib.parse import urljoin
 
 sqlilist="sqlilist.txt"
 
@@ -102,14 +103,55 @@ while True:
        testlinks.append(tl)
    for tl in testlinks:
        try:
-           if "=" in tl:
-               navigate(tl.replace("=","='"))
-               source = browser.page_source
-               if is_vulnerable(source) == True:
-                   print(tl , colored("Vuln Found" , "green" , attrs=['bold']))
-                   with open(sqlilist,"a") as f:
-                      f.write(tl+"\n")
-                      f.close()
+           navigate(tl.replace("=","='"))
+           source = browser.page_source
+           if is_vulnerable(source) == True:
+               print(tl , colored("Vuln Found" , "green" , attrs=['bold']))
+               with open(sqlilist,"a") as f:
+                  f.write(tl+"\n")
+                  f.close()
+           else:
+               forms = browser.find_elements_by_xpath("//form")
+               print(f"[+] Detected {len(forms)} forms on {tl}.")
+               if len(forms) > 0:
+                   for form in forms:
+                       form_inputs = form.find_elements_by_xpath("//input")
+                       action = form.get_attribute('action')
+                       action=action.lower()
+                       method = form.get_attribute('method')
+                       method=method.lower()
+                       for c in "\"'":
+                           # the data body we want to submit
+                           data = {}
+                           for fi in form_inputs:
+                               if fi.get_attribute('value') or fi.get_attribute('type') == "hidden":
+                                   # any input form that has some value or hidden,
+                                   # just use it in the form body
+                                   try:
+                                       data[fi.get_attribute('name')] = fi.get_attribute('value') + c
+                                   except:
+                                       pass
+                               elif fi.get_attribute('type') != "submit":
+                                   # all others except submit, use some junk data with special character
+                                   data[fi.get_attribute('name')] = f"test{c}"
+                           # join the url with the action (form request URL)
+                           url = urljoin(tl, action)
+                           if method == "post":
+                               res = requests.post(url, data=data)
+                               source=res.text
+                           elif method == "get":
+                               res = requests.get(url, data=data)
+                               source=res.text
+                           # test whether the resulting page is vulnerable
+                           if is_vulnerable(source) == True:
+                               #print("[+] SQL Injection vulnerability detected, link:", url)
+                               print(tl , colored("Vuln Found" , "green" , attrs=['bold']))
+                               with open(sqlilist,"a") as f:
+                                  f.write(tl+"\n")
+                                  f.close()
+                                  break
+                           else:
+                               print(tl , colored("Not Found" , "red" , attrs=['bold']))
                else:
                    print(tl , colored("Not Found" , "red" , attrs=['bold']))
        except:
