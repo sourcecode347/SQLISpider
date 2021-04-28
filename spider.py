@@ -89,10 +89,7 @@ def is_vulnerable(source):
 openbrowser()
 while True:
    rnum = random.randint(0,3)
-   if rnum == 0:
-       dork = "https://duckduckgo.com/?q="+r.get_random_word()+"+%3Fid%3D"+str(random.randint(0,100000))+"&t=h_&ia=web"
-   else:
-       dork = "https://duckduckgo.com/?q="+r.get_random_word()+"+inurl:%3Fid%3D"+str(random.randint(0,100000))+"&t=h_&ia=web"
+   dork = "https://duckduckgo.com/?q="+r.get_random_word()+"+php%3Fid%3D"+str(random.randint(0,100000))+"&t=h_&ia=web"
    navigate(dork)
    testlinks=[]
    for x in range(0,5):
