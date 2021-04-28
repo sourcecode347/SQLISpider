@@ -89,7 +89,12 @@ def is_vulnerable(source):
 openbrowser()
 while True:
    rnum = random.randint(0,3)
-   dork = "https://duckduckgo.com/?q="+r.get_random_word()+"+php%3Fid%3D"+str(random.randint(0,100000))+"&t=h_&ia=web"
+   if rnum ==0:
+       dork = "https://duckduckgo.com/?q=php%3Fid%3D"+str(random.randint(0,100000))+"+"+r.get_random_word()+"&t=h_&ia=web"
+   elif rnum ==1:
+       dork = "https://duckduckgo.com/?q=inurl:%3Fid%3D"+str(random.randint(0,100000))+"&t=h_&ia=web"
+   else:
+       dork = "https://duckduckgo.com/?q="+r.get_random_word()+"+inurl:%3Fid%3D"+str(random.randint(0,100000))+"&t=h_&ia=web"
    navigate(dork)
    testlinks=[]
    for x in range(0,5):
@@ -106,57 +111,58 @@ while True:
        testlinks.append(tl)
    for tl in testlinks:
        try:
-           navigate(tl.replace("=","='"))
-           source = browser.page_source
-           if is_vulnerable(source) == True:
-               print(tl , colored("Vuln Found" , "green" , attrs=['bold']))
-               with open(sqlilist,"a") as f:
-                  f.write(tl+"\n")
-                  f.close()
-           else:
-               forms = browser.find_elements_by_xpath("//form")
-               print(f"[+] Detected {len(forms)} forms on {tl}.")
-               if len(forms) > 0:
-                   for form in forms:
-                       form_inputs = form.find_elements_by_xpath("//input")
-                       action = form.get_attribute('action')
-                       action=action.lower()
-                       method = form.get_attribute('method')
-                       method=method.lower()
-                       for c in "\"'":
-                           # the data body we want to submit
-                           data = {}
-                           for fi in form_inputs:
-                               if fi.get_attribute('value') or fi.get_attribute('type') == "hidden":
-                                   # any input form that has some value or hidden,
-                                   # just use it in the form body
-                                   try:
-                                       data[fi.get_attribute('name')] = fi.get_attribute('value') + c
-                                   except:
-                                       pass
-                               elif fi.get_attribute('type') != "submit":
-                                   # all others except submit, use some junk data with special character
-                                   data[fi.get_attribute('name')] = f"test{c}"
-                           # join the url with the action (form request URL)
-                           url = urljoin(tl, action)
-                           if method == "post":
-                               res = requests.post(url, data=data)
-                               source=res.text
-                           elif method == "get":
-                               res = requests.get(url, data=data)
-                               source=res.text
-                           # test whether the resulting page is vulnerable
-                           if is_vulnerable(source) == True:
-                               #print("[+] SQL Injection vulnerability detected, link:", url)
-                               print(tl , colored("Vuln Found" , "green" , attrs=['bold']))
-                               with open(sqlilist,"a") as f:
-                                  f.write(tl+"\n")
-                                  f.close()
-                                  break
-                           else:
-                               print(tl , colored("Not Found" , "red" , attrs=['bold']))
+           if "=" in tl:
+               navigate(tl.replace("=","='"))
+               source = browser.page_source
+               if is_vulnerable(source) == True:
+                   print(tl , colored("Vuln Found" , "green" , attrs=['bold']))
+                   with open(sqlilist,"a") as f:
+                      f.write(tl+"\n")
+                      f.close()
                else:
-                   print(tl , colored("Not Found" , "red" , attrs=['bold']))
+                   forms = browser.find_elements_by_xpath("//form")
+                   print(f"[+] Detected {len(forms)} forms on {tl}.")
+                   if len(forms) > 0:
+                       for form in forms:
+                           form_inputs = form.find_elements_by_xpath("//input")
+                           action = form.get_attribute('action')
+                           action=action.lower()
+                           method = form.get_attribute('method')
+                           method=method.lower()
+                           for c in "\"'":
+                               # the data body we want to submit
+                               data = {}
+                               for fi in form_inputs:
+                                   if fi.get_attribute('value') or fi.get_attribute('type') == "hidden":
+                                       # any input form that has some value or hidden,
+                                       # just use it in the form body
+                                       try:
+                                           data[fi.get_attribute('name')] = fi.get_attribute('value') + c
+                                       except:
+                                           pass
+                                   elif fi.get_attribute('type') != "submit":
+                                       # all others except submit, use some junk data with special character
+                                       data[fi.get_attribute('name')] = f"test{c}"
+                               # join the url with the action (form request URL)
+                               url = urljoin(tl, action)
+                               if method == "post":
+                                   res = requests.post(url, data=data)
+                                   source=res.text
+                               elif method == "get":
+                                   res = requests.get(url, data=data)
+                                   source=res.text
+                               # test whether the resulting page is vulnerable
+                               if is_vulnerable(source) == True:
+                                   #print("[+] SQL Injection vulnerability detected, link:", url)
+                                   print(tl , colored("Vuln Found" , "green" , attrs=['bold']))
+                                   with open(sqlilist,"a") as f:
+                                      f.write(tl+"\n")
+                                      f.close()
+                                      break
+                               else:
+                                   print(tl , colored("Not Found" , "red" , attrs=['bold']))
+                   else:
+                       print(tl , colored("Not Found" , "red" , attrs=['bold']))
        except:
            pass
    #browser.quit()
