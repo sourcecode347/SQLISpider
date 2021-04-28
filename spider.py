@@ -37,7 +37,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from termcolor import colored
 from urllib.parse import urljoin
+from random_word import RandomWords
 
+r = RandomWords()
 sqlilist="sqlilist.txt"
 
 logo = '''
@@ -86,7 +88,7 @@ def is_vulnerable(source):
     return False
 openbrowser()
 while True:
-   dork = "https://duckduckgo.com/?q=php%3Fid%3D"+str(random.randint(0,100000))+"&t=h_&ia=web"
+   dork = "https://duckduckgo.com/?q="+r.get_random_word()+"+%3Fid%3D"+str(random.randint(0,100000))+"&t=h_&ia=web"
    navigate(dork)
    testlinks=[]
    for x in range(0,5):
