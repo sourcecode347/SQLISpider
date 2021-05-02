@@ -34,4 +34,4 @@ and add these 2 lines to the 43 lines of code
 
 Also to test firefox automatically, you will need to download the geckodriver and set its path to the executable_path variable in row 66 of the code.
 
-By default I have it to be headless, ie not to show what processes firefox is running. You can prevent this by putting a # in front of the command line 66 of the code and turning it into a comment.
+By default I have it to be headless, ie not to show what processes firefox is running. You can prevent this by putting a # in front of the command line 65 of the code and turning it into a comment.
