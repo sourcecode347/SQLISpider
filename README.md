@@ -1,5 +1,5 @@
 # SQLISpider
-A very simple example of how the SQLI Spiders work ...
+A very simple example of 'how the SQLI Spiders work' ...
 
 <img src='screen.jpg' style='width:90%;height:auto;'></img>
 
