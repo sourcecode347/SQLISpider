@@ -24,7 +24,7 @@ If you are on Windows, this utility library will also be needed for the terminal
 
     pip install colorama
 
-and add these 2 rows to the 43 rows of code
+and add these 2 lines to the 43 lines of code
 
     import colorama
     
