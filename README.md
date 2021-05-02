@@ -12,7 +12,7 @@ I certainly would not give an advanced code that has made possible attacks in th
 
 But I can show you an example of how to grow your own and have permanent spiders research the web for vulnerabilities.
 
-To run such code you will need to have the latest version of Firefox and python, installed.
+To run such code you will need to have the latest version of Firefox and python installed.
 
 Install the following Python libraries via pip.
 
