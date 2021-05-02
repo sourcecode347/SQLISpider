@@ -20,6 +20,8 @@ Install the following Python libraries via pip.
     
     pip install termcolor
 
+    pip install Random-Word
+
 If you are on Windows, this utility library will also be needed for the terminal colors to work.
 
     pip install colorama
