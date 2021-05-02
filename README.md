@@ -16,17 +16,19 @@ To run such code you will need to have the latest version of Firefox and python,
 
 Install the following Python libraries via pip.
 
-  pip install selenium
-  pip install termcolor
+    pip install selenium
+    
+    pip install termcolor
 
 If you are on Windows, this utility library will also be needed for the terminal colors to work.
 
-  pip install colorama
+    pip install colorama
 
 and add these 2 rows to the 43 rows of code
 
-  import colorama
-  colorama.init ()
+    import colorama
+    
+    colorama.init ()
 
 Also to test firefox automatically, you will need to download the geckodriver and set its path to the executable_path variable in row 66 of the code.
 
