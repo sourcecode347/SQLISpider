@@ -33,7 +33,13 @@ To set browser as headless add the -h parameter:
 To include forms for SQLI Testing add -f parameter:
     
     python spider.py -h -f
-    
+
+if you want to printing not detected SQLi Links add the -n parameter:
+
+    python spider.py -h -f -n
+
+    python spider.py -h -n
+
 if you are in windows system add the -w parameter:
 
     python spider.py -w
