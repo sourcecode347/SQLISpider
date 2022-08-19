@@ -26,12 +26,18 @@ If you are on Windows, this utility library will also be needed for the terminal
 
     pip install colorama
 
-and add these 2 lines to the 43 lines of code
-
-    import colorama
+To set browser as headless add the -h parameter:
     
-    colorama.init ()
+    python spider.py -h
+    
+To include forms for SQLI Testing add -f parameter:
+    
+    python spider.py -h -f
+    
+if you are in windows system add the -w parameter:
 
-Also to test firefox automatically, you will need to download the geckodriver and set its path to the executable_path variable in row 66 of the code.
+    python spider.py -w
 
-By default I have it to be headless, ie not to show what processes firefox is running. You can prevent this by putting a # in front of the command line 65 of the code and turning it into a comment.
+Also to test firefox automatically, you will need to download the geckodriver and set its path to the executable_path variable in row 84 of the code.
+
+This Repository is educational purposes and we are not responsible for how you use it.
