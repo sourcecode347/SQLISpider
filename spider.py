@@ -2,7 +2,9 @@
 # -*- coding utf-8 -*-
 # Author SourceCode347
 # SQLISpider
-
+########## Edit the Path of GeckoDriver #################
+geckodriverPath="/home/zero/Desktop/drivers/geckodriver"
+#########################################################
 license = '''
 MIT License
 
@@ -42,6 +44,7 @@ from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from termcolor import colored
 from urllib.parse import urljoin
 from random_word import RandomWords
+from urllib.parse import urlparse
 import sys
 
 r = RandomWords()
@@ -58,7 +61,7 @@ for arg in range(0,len(sys.argv)):
         iforms=True
     if sys.argv[arg-1]=="-w":
         cwind=True
-    if sys.argv[arg-1]=="-w":
+    if sys.argv[arg-1]=="-n":
         nvuln=True
 if cwind == True:
     import colorama
@@ -84,7 +87,7 @@ def openbrowser():
     options = webdriver.FirefoxOptions()
     if hless==True:
         options.add_argument("--headless")
-    ser=Service("/home/zerocode/Desktop/SQLISpider/geckodriver")
+    ser=Service(geckodriverPath)
     browser = webdriver.Firefox(service=ser,options=options)
     time.sleep(5)
 def navigate(link):
@@ -110,7 +113,7 @@ def is_vulnerable(source):
     return False
 openbrowser()
 while True:
-   rnum = random.randint(0,2)
+   rnum = random.randint(0,1)
    if rnum ==0:
        dork = "https://duckduckgo.com/?q="+str(r.get_random_word())+"&t=h_&ia=web"
    elif rnum ==1:
@@ -138,9 +141,11 @@ while True:
                source = browser.page_source
                if is_vulnerable(source) == True:
                    print(tl , colored("Vuln Found" , "green" , attrs=['bold']))
+                   domain = urlparse(tl).netloc
                    with open(sqlilist,"a") as f:
-                      f.write(tl+"\n")
-                      f.close()
+                        if domain not in open(sqlilist).read():   
+                            f.write(tl+"\n")
+                        f.close()
                elif iforms==False and nvuln==True:
                    print(tl , colored("Not Found" , "red" , attrs=['bold']))
                else:
