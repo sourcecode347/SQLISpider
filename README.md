@@ -44,18 +44,26 @@ if you are in windows system add the -w parameter:
 
     python spider.py -w
 
-Also to test firefox automatically, you will need to download the geckodriver and set its path to the executable_path variable in row 84 of the code.
+Also to test firefox automatically, you will need to download the geckodriver and set its path to the executable_path variable in row <code>6</code> of the code.
 
 This Repository is educational purposes and we are not responsible for how you use it.
 
 Tested in Ubuntu 22.04 and works fine!
 
-if you have troubles with snap versions of firefox execute this commands:
+if you have troubles with snap versions of firefox profile execute these commands:
 
     sudo snap remove firefox
 
     sudo add-apt-repository ppa:mozillateam/ppa
     
+    echo '
+    Package: *
+    Pin: release o=LP-PPA-mozillateam
+    Pin-Priority: 1001
+    ' | sudo tee /etc/apt/preferences.d/mozilla-firefox
+
+    echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+        
     sudo apt install firefox
 
 Be well everyone and always have positive energy.
